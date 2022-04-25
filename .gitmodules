@@ -1,0 +1,4 @@
+[submodule "ios/Triangle/sokol"]
+	path = ios/Triangle/sokol
+	url = https://github.com/HiberWorld/sokol
+	branch = hiber2
