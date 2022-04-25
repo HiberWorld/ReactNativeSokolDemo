@@ -16,6 +16,7 @@ import {
   Text,
   useColorScheme,
   View,
+  NativeModules,
 } from 'react-native';
 
 import {
@@ -25,11 +26,21 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
+
+const TriangleModule = NativeModules.TriangleModule;
 
 const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.sectionContainer}>
+      <Pressable
+        onPress={() => {
+          console.log('pressed');
+          TriangleModule.startTriangle();
+        }}>
+        <Text>Triangle!</Text>
+      </Pressable>
       <Text
         style={[
           styles.sectionTitle,
