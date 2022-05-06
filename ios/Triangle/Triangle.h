@@ -14,9 +14,8 @@
 @interface TriangleModule : RCTEventEmitter <RCTBridgeModule>
 
 + (id)sharedInstance;
-@property (nonatomic, assign) bool hasListeners;
+@property(nonatomic, assign) bool hasListeners;
 
 @end
-
 
 #endif /* Triangle_h */

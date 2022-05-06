@@ -41,9 +41,9 @@ static void init(void) {
     /* a shader pair, compiled from source code */
     sg_shader shd = sg_make_shader(&(sg_shader_desc){
         /*
-            The shader main() function cannot be called 'main' in 
+            The shader main() function cannot be called 'main' in
             the Metal shader languages, thus we define '_main' as the
-            default function. This can be override with the 
+            default function. This can be override with the
             sg_shader_desc.vs.entry and sg_shader_desc.fs.entry fields.
         */
         .vs.source =
@@ -98,8 +98,8 @@ static void frame(void) {
 
 void cleanupCallback(void) {
   sg_shutdown();
-	[[UIApplication sharedApplication].delegate.window makeKeyAndVisible];
-	[[UIApplication sharedApplication].delegate.window.rootViewController setNeedsUpdateOfScreenEdgesDeferringSystemGestures];
+  [[UIApplication sharedApplication].delegate.window makeKeyAndVisible];
+  [[UIApplication sharedApplication].delegate.window.rootViewController setNeedsUpdateOfScreenEdgesDeferringSystemGestures];
 }
 
 void _sapp_init_state(const sapp_desc* desc);
@@ -133,11 +133,11 @@ bool _sapp_app_delegate_didFinishLaunchingWithOptions(NSDictionary* launchOption
 }
 
 RCT_EXPORT_METHOD(
-	startTriangle)
+  startTriangle)
 {
     
-	dispatch_async(dispatch_get_main_queue(), ^{
-		
+  dispatch_async(dispatch_get_main_queue(), ^{
+    
     sapp_desc desc = {};
     desc.high_dpi = true;
     desc.init_cb = init;
@@ -147,10 +147,10 @@ RCT_EXPORT_METHOD(
     desc.window_title = "Triangle";
     desc.enable_clipboard = true;
 
-	  _sapp_init_state(&desc);
+    _sapp_init_state(&desc);
     _sapp_app_delegate_didFinishLaunchingWithOptions(nil, [[UIViewController alloc] init]);
 
-  	});
+    });
 }
 
 RCT_EXPORT_MODULE();
