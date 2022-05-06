@@ -14,12 +14,22 @@
 #include "sokol/sokol_glue.h"
 #include "Triangle.h"
 
+#include <math.h>
 
 static struct {
     sg_pass_action pass_action;
     sg_pipeline pip;
+    sg_buffer vertex_buffer;
     sg_bindings bind;
 } state;
+
+/* a vertex buffer with 3 vertices */
+static float vertices[] = {
+    // positions        colors
+     0.0f, 0.5f, 0.5f,  1.0f, 0.0f, 0.0f, 1.0f,
+     0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f
+};
 
 static void init(void) {
     /* setup sokol */
@@ -27,16 +37,13 @@ static void init(void) {
         .context = sapp_sgcontext()
     });
 
-    /* a vertex buffer with 3 vertices */
-    float vertices[] = {
-        // positions        colors
-         0.0f, 0.5f, 0.5f,  1.0f, 0.0f, 0.0f, 1.0f,
-         0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f
-    };
-    state.bind.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc){
-        .data = SG_RANGE(vertices)
+    state.vertex_buffer = sg_make_buffer(&(sg_buffer_desc){
+        // .data = SG_RANGE(vertices),
+        .size = SG_RANGE(vertices).size,
+        .usage = SG_USAGE_STREAM
     });
+
+    state.bind.vertex_buffers[0] = state.vertex_buffer;
 
     /* a shader pair, compiled from source code */
     sg_shader shd = sg_make_shader(&(sg_shader_desc){
@@ -87,7 +94,14 @@ static void init(void) {
     });
 }
 
+static float frame_time = 0.0f;
+
 static void frame(void) {
+    frame_time += 1.0f / 60.0f;
+
+    vertices[0] = cosf(frame_time);
+    
+    sg_update_buffer(state.vertex_buffer, &SG_RANGE(vertices));
     sg_begin_default_pass(&state.pass_action, sapp_width(), sapp_height());
     sg_apply_pipeline(state.pip);
     sg_apply_bindings(&state.bind);
@@ -96,7 +110,13 @@ static void frame(void) {
     sg_commit();
 }
 
-void cleanupCallback(void) {
+static void eventCallback(const sapp_event *event) {
+    if (event->type == SAPP_EVENTTYPE_TOUCHES_BEGAN) {
+        sapp_request_quit();
+    }
+}
+
+static void cleanupCallback(void) {
   sg_shutdown();
   [[UIApplication sharedApplication].delegate.window makeKeyAndVisible];
   [[UIApplication sharedApplication].delegate.window.rootViewController setNeedsUpdateOfScreenEdgesDeferringSystemGestures];
@@ -143,7 +163,7 @@ RCT_EXPORT_METHOD(
     desc.init_cb = init;
     desc.frame_cb = frame;
     desc.cleanup_cb = cleanupCallback;
-    desc.event_cb = nil;
+    desc.event_cb = eventCallback;
     desc.window_title = "Triangle";
     desc.enable_clipboard = true;
 
