@@ -1,7 +1,7 @@
 import {NativeModules} from 'react-native';
 
-type Triangle = {
+interface Triangle {
   startTriangle: () => void;
-};
+}
 
-export const Triangle: Triangle = NativeModules.TriangleModule;
+export default NativeModules.TriangleModule as Triangle;

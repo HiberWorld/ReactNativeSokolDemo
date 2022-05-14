@@ -12,7 +12,7 @@ import {
   LeaderboardEntryText,
   DarkSafeArea,
 } from './App.styles';
-import {Triangle} from './Triangle';
+import Triangle from './Triangle';
 
 const TriangleStart = () => (
   <TriangleContainer>
