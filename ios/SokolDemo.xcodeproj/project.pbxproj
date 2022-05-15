@@ -11,6 +11,8 @@
 		0C80B921A6F3F58F76C31292 /* libPods-SokolDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-SokolDemo.a */; };
 		0E060AA128253D5F0022A678 /* Triangle.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E060AA028253D5F0022A678 /* Triangle.m */; };
 		0E060AA228253D5F0022A678 /* Triangle.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E060AA028253D5F0022A678 /* Triangle.m */; };
+		0EEFE20428312BE90039A113 /* triangleFS.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0EEFE20328312BE90039A113 /* triangleFS.txt */; };
+		0EEFE20628312C020039A113 /* triangleVS.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0EEFE20528312C020039A113 /* triangleVS.txt */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -33,7 +35,9 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* SokolDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SokolDemoTests.m; sourceTree = "<group>"; };
 		0E060AA028253D5F0022A678 /* Triangle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Triangle.m; path = Triangle/Triangle.m; sourceTree = "<group>"; };
-		0E060AA328253E2A0022A678 /* Triangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Triangle.h; path = Triangle/Triangle.h; sourceTree = "<group>"; };
+		0E060AA328253E2A0022A678 /* Triangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Triangle.h; sourceTree = "<group>"; };
+		0EEFE20328312BE90039A113 /* triangleFS.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = triangleFS.txt; sourceTree = "<group>"; };
+		0EEFE20528312C020039A113 /* triangleVS.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = triangleVS.txt; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* SokolDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SokolDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = SokolDemo/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = SokolDemo/AppDelegate.mm; sourceTree = "<group>"; };
@@ -87,6 +91,24 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		0E549D0728311DC1003A6E13 /* Triangle */ = {
+			isa = PBXGroup;
+			children = (
+				0E060AA328253E2A0022A678 /* Triangle.h */,
+				0E060AA028253D5F0022A678 /* Triangle.m */,
+			);
+			name = Triangle;
+			sourceTree = "<group>";
+		};
+		0E549D0828311E19003A6E13 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				0EEFE20328312BE90039A113 /* triangleFS.txt */,
+				0EEFE20528312C020039A113 /* triangleVS.txt */,
+			);
+			path = Shaders;
+			sourceTree = "<group>";
+		};
 		13B07FAE1A68108700A75B9A /* SokolDemo */ = {
 			isa = PBXGroup;
 			children = (
@@ -120,8 +142,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				0E060AA328253E2A0022A678 /* Triangle.h */,
-				0E060AA028253D5F0022A678 /* Triangle.m */,
+				0E549D0828311E19003A6E13 /* Shaders */,
+				0E549D0728311DC1003A6E13 /* Triangle */,
 				13B07FAE1A68108700A75B9A /* SokolDemo */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* SokolDemoTests */,
@@ -249,7 +271,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				0EEFE20428312BE90039A113 /* triangleFS.txt in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				0EEFE20628312C020039A113 /* triangleVS.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

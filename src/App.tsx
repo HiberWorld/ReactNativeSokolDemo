@@ -16,7 +16,8 @@ const TriangleStart = () => (
   <TriangleContainer>
     <TriangleButton
       onPress={() => {
-        Triangle.startTriangle();
+        console.log('starting');
+        Triangle.startTriangle(res => console.log('res: ', res));
       }}>
       <TriangleButtonText>▲ Enter the Triangle ▲</TriangleButtonText>
     </TriangleButton>

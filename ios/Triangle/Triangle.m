@@ -5,6 +5,7 @@
 #define SOKOL_IMPL
 #define SOKOL_METAL
 #define SOKOL_NO_ENTRY
+#define SOKOL_LOG(msg) RCTLogInfo([NSString stringWithUTF8String:msg])
 #include "sokol/sokol_app.h"
 #include "sokol/sokol_gfx.h"
 #include "sokol/sokol_glue.h"
@@ -12,98 +13,107 @@
 
 #include <math.h>
 
-static struct {
+typedef struct {
+  float posX, posY, scale, rot, aspect;
+} shader_data_t;
+
+typedef struct {
+  shader_data_t shader_data;
+  bool touchingLeft;
+  bool touchingRight;
+} player_t;
+
+typedef struct {
     sg_pass_action pass_action;
     sg_pipeline pip;
     sg_buffer vertex_buffer;
     sg_bindings bind;
-} state;
+    player_t player;
+} state_t;
+
+static state_t state = { 
+  .player.shader_data = {
+    .scale = 0.2f,
+    .posX = 0.8f,
+    .posY = 0.2f
+  }
+};
+
+typedef struct {
+  float posX, posY, posZ;
+  float colR, colG, colB;
+} vertex_t;
 
 /* a vertex buffer with 3 vertices */
-static float vertices[] = {
+static vertex_t shipVertices[] = {
     // positions        colors
-     0.0f, 0.5f, 0.5f,  1.0f, 0.0f, 0.0f, 1.0f,
-     0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
-    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f
+     {
+       .posX = 0.0f, .posY = 1.0f, .posZ = 0.0f,  
+       .colR = 1.0f, .colG = 0.0f, .colB = 0.0f 
+      },
+      {
+       .posX = -1.0f, .posY = -1.0f, .posZ = 0.0f,  
+       .colR = 0.0f, .colG = 1.0f, .colB = 0.0f 
+      },
+      {
+       .posX = 1.0f, .posY = -1.0f, .posZ = 0.0f, 
+       .colR = 0.0f, .colG = 0.0f, .colB = 1.0f 
+      }
 };
 
 static void init(void) {
+    RCTLogInfo(@"Init");
     /* setup sokol */
     sg_setup(&(sg_desc){
         .context = sapp_sgcontext()
     });
 
     state.vertex_buffer = sg_make_buffer(&(sg_buffer_desc){
-        // .data = SG_RANGE(vertices),
-        .size = SG_RANGE(vertices).size,
+        .size = SG_RANGE(shipVertices).size,
         .usage = SG_USAGE_STREAM
     });
 
     state.bind.vertex_buffers[0] = state.vertex_buffer;
 
-    /* a shader pair, compiled from source code */
-    sg_shader shd = sg_make_shader(&(sg_shader_desc){
-        /*
-            The shader main() function cannot be called 'main' in
-            the Metal shader languages, thus we define '_main' as the
-            default function. This can be override with the
-            sg_shader_desc.vs.entry and sg_shader_desc.fs.entry fields.
-        */
-        .vs.source =
-            "#include <metal_stdlib>\n"
-            "using namespace metal;\n"
-            "struct vs_in {\n"
-            "  float4 position [[attribute(0)]];\n"
-            "  float4 color [[attribute(1)]];\n"
-            "};\n"
-            "struct vs_out {\n"
-            "  float4 position [[position]];\n"
-            "  float4 color;\n"
-            "};\n"
-            "vertex vs_out _main(vs_in inp [[stage_in]]) {\n"
-            "  vs_out outp;\n"
-            "  outp.position = inp.position;\n"
-            "  outp.color = inp.color;\n"
-            "  return outp;\n"
-            "}\n",
-        .fs.source =
-            "#include <metal_stdlib>\n"
-            "using namespace metal;\n"
-            "fragment float4 _main(float4 color [[stage_in]]) {\n"
-            "  return color;\n"
-            "};\n"
-    });
+  NSString* vsPath = [[NSBundle mainBundle] pathForResource:@"triangleVS" ofType:@"txt"];
+  NSString* fsPath = [[NSBundle mainBundle] pathForResource:@"triangleFS" ofType:@"txt"];
 
-    /* create a pipeline object */
-    state.pip = sg_make_pipeline(&(sg_pipeline_desc){
-        /* Metal has explicit attribute locations, and the vertex layout
-           has no gaps, so we don't need to provide stride, offsets
-           or attribute names
-        */
-        .layout = {
-            .attrs = {
-                [0] = { .format=SG_VERTEXFORMAT_FLOAT3 },
-                [1] = { .format=SG_VERTEXFORMAT_FLOAT4 }
-            },
-        },
-        .shader = shd
-    });
+  NSString* vertexShader = [NSString stringWithContentsOfFile:vsPath encoding:NSUTF8StringEncoding error:NULL];
+  NSString* fragmentShader = [NSString stringWithContentsOfFile:fsPath encoding:NSUTF8StringEncoding error:NULL];
+
+  sg_shader shd = sg_make_shader(&(sg_shader_desc){
+    .vs.uniform_blocks[0].size = sizeof(shader_data_t),
+    .vs.source = [vertexShader UTF8String],
+    .fs.source = [fragmentShader UTF8String]
+  });
+
+  state.pip = sg_make_pipeline(&(sg_pipeline_desc){
+      .layout = {
+          .attrs = {
+              [0] = { .format=SG_VERTEXFORMAT_FLOAT3 },
+              [1] = { .format=SG_VERTEXFORMAT_FLOAT3 }
+          },
+      },
+      .shader = shd
+  });
 }
 
 static float frame_time = 0.0f;
 
 static void frame(void) {
-    frame_time += 1.0f / 60.0f;
+  frame_time += 1.0f / 60.0f;
 
-    vertices[0] = cosf(frame_time);
-    
-    sg_update_buffer(state.vertex_buffer, &SG_RANGE(vertices));
-    sg_begin_default_pass(&state.pass_action, sapp_width(), sapp_height());
-    sg_apply_pipeline(state.pip);
-    sg_apply_bindings(&state.bind);
-    sg_draw(0, 3, 1);
-    sg_end_pass();
-    sg_commit();
+  state.player.shader_data.aspect = sapp_widthf() / sapp_heightf();
+  state.player.shader_data.rot = frame_time;
+  
+  sg_update_buffer(state.vertex_buffer, &SG_RANGE(shipVertices));
+  sg_begin_default_pass(&state.pass_action, sapp_width(), sapp_height());
+  sg_apply_pipeline(state.pip);
+  sg_apply_bindings(&state.bind);
+  sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, &SG_RANGE(state.player.shader_data));
+  sg_draw(0, 3, 1);
+  sg_end_pass();
+  sg_commit();
 }
 
 static void eventCallback(const sapp_event *event) {
@@ -149,8 +159,9 @@ bool _sapp_app_delegate_didFinishLaunchingWithOptions(NSDictionary* launchOption
 }
 
 RCT_EXPORT_METHOD(
-  startTriangle)
+  startTriangle: (RCTResponseSenderBlock)callback)
 {
+  callback(@[@("you win!")]);
     
   dispatch_async(dispatch_get_main_queue(), ^{
     

@@ -1,0 +1,43 @@
+#include <metal_stdlib>
+using namespace metal;
+
+struct params_t {
+  float2 pos;
+  float scale;
+  float rot;
+  float aspect;
+};
+
+struct vs_in {
+  float4 pos [[attribute(0)]];
+  float3 color [[attribute(1)]];
+};
+
+struct vs_out {
+  float4 pos [[position]];
+  float3 color;
+};
+
+vertex vs_out _main(
+  vs_in inp [[stage_in]], 
+  constant params_t& params [[buffer(0)]]
+) {
+  vs_out outp;
+
+  float2 p = inp.pos.xy * params.scale;
+
+  // rotate p
+  float2 rotX = float2(cos(params.rot), sin(params.rot));
+  float2 rotY = float2(-sin(params.rot), cos(params.rot));
+  p = rotX * p.x + rotY * p.y;
+
+  // stretch p
+  p.y *= params.aspect;
+
+  // position p
+  p.xy += params.pos.xy;
+
+  outp.pos = float4(p.x, p.y, 0.0, 1.0);
+  outp.color = inp.color;
+  return outp;
+}
