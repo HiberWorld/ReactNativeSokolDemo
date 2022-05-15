@@ -19,6 +19,7 @@ typedef struct {
 
 typedef struct {
   shader_data_t shader_data;
+  float velocity;
   bool touchingLeft;
   bool touchingRight;
 } player_t;
@@ -34,8 +35,8 @@ typedef struct {
 static state_t state = { 
   .player.shader_data = {
     .scale = 0.2f,
-    .posX = 0.8f,
-    .posY = 0.2f
+    .posX = 0.0f,
+    .posY = -0.7f
   }
 };
 
@@ -70,7 +71,7 @@ static void init(void) {
 
     state.vertex_buffer = sg_make_buffer(&(sg_buffer_desc){
         .size = SG_RANGE(shipVertices).size,
-        .usage = SG_USAGE_STREAM
+        .data = SG_RANGE(shipVertices),
     });
 
     state.bind.vertex_buffers[0] = state.vertex_buffer;
@@ -98,15 +99,33 @@ static void init(void) {
   });
 }
 
-static float frame_time = 0.0f;
-
 static void frame(void) {
-  frame_time += 1.0f / 60.0f;
+  const float deltaTime = 1.0f / 60.0f;
 
   state.player.shader_data.aspect = sapp_widthf() / sapp_heightf();
-  state.player.shader_data.rot = frame_time;
+  // state.player.shader_data.rot = frame_time;
+
+  if (state.player.touchingLeft) {
+    state.player.velocity -= 5.0f * deltaTime;
+  }
+
+  if (state.player.touchingRight) {
+    state.player.velocity += 5.0f * deltaTime;
+  }
+  state.player.velocity *= 0.97f;
+
+  if (state.player.shader_data.posX > 0.9f) {
+    state.player.velocity *= -0.2f;
+    state.player.shader_data.posX = 0.9f;
+  }
+
+  if (state.player.shader_data.posX < -0.9f) {
+    state.player.velocity *= -0.2f;
+    state.player.shader_data.posX = -0.9f;
+  }
+
+  state.player.shader_data.posX += state.player.velocity * deltaTime;
   
-  sg_update_buffer(state.vertex_buffer, &SG_RANGE(shipVertices));
   sg_begin_default_pass(&state.pass_action, sapp_width(), sapp_height());
   sg_apply_pipeline(state.pip);
   sg_apply_bindings(&state.bind);
