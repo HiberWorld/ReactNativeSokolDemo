@@ -6,12 +6,10 @@ import {
   TriangleContainer,
   TriangleButton,
   TriangleButtonText,
-  LeaderboardContainer,
-  LeaderboardHeader,
-  LeaderboardEntry,
-  LeaderboardEntryText,
   DarkSafeArea,
 } from './App.styles';
+import Leaderboard from './Leaderboard';
+import Logo from './Logo';
 import Triangle from './Triangle';
 
 const TriangleStart = () => (
@@ -25,20 +23,12 @@ const TriangleStart = () => (
   </TriangleContainer>
 );
 
-const Leaderboard = () => (
-  <LeaderboardContainer>
-    <LeaderboardHeader>Leaderboard</LeaderboardHeader>
-    <LeaderboardEntry>
-      <LeaderboardEntryText>100 points - Wilhelm</LeaderboardEntryText>
-    </LeaderboardEntry>
-  </LeaderboardContainer>
-);
-
 const App = () => {
   return (
     <DarkSafeArea>
       <StatusBar barStyle={'light-content'} />
       <FullPage>
+        <Logo />
         <PageTitle>Triangle Game</PageTitle>
         <TriangleStart />
         <Leaderboard />

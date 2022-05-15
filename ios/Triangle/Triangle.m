@@ -1,11 +1,7 @@
-//
-//  Triangle.m
-//  ReactNativeSokolDemo
-//
-//  Created by Wilhelm Berggren on 2022-04-25.
-//
-
 #import <Foundation/Foundation.h>
+#import <React/RCTLog.h>
+
+/* Sokol */
 #define SOKOL_IMPL
 #define SOKOL_METAL
 #define SOKOL_NO_ENTRY

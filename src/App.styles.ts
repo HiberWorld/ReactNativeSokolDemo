@@ -1,12 +1,5 @@
 import styled from 'styled-components/native';
-
-export const colors = {
-  dark: '#1B1C20',
-  veryDark: '#343540',
-  almostBlack: '#292A31',
-  red: '#E81623',
-  white: '#FFFFFF',
-};
+import {colors} from './colors';
 
 export const DarkSafeArea = styled.SafeAreaView`
   background-color: ${colors.dark};
@@ -40,27 +33,4 @@ export const TriangleButtonText = styled.Text`
   font-weight: 500;
   color: ${colors.white};
   text-align: center;
-`;
-
-export const LeaderboardContainer = styled.ScrollView`
-  /* margin: 16px; */
-  border-radius: 8px;
-`;
-
-export const LeaderboardHeader = styled.Text`
-  font-size: 32px;
-  font-weight: 500;
-  color: ${colors.white};
-  margin: 16px;
-`;
-
-export const LeaderboardEntry = styled.View`
-  color: ${colors.white};
-  background-color: ${colors.almostBlack};
-  border-radius: 8px;
-`;
-
-export const LeaderboardEntryText = styled.Text`
-  color: ${colors.white};
-  margin: 16px;
 `;
