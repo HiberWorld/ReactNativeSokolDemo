@@ -5,7 +5,7 @@
 #define SOKOL_IMPL
 #define SOKOL_METAL
 #define SOKOL_NO_ENTRY
-#define SOKOL_LOG(msg) RCTLogInfo([NSString stringWithUTF8String:msg])
+#define SOKOL_LOG(msg) RCTLogInfo(@"%s", msg)
 #include "sokol/sokol_app.h"
 #include "sokol/sokol_gfx.h"
 #include "sokol/sokol_glue.h"
@@ -117,9 +117,32 @@ static void frame(void) {
 }
 
 static void eventCallback(const sapp_event *event) {
-    if (event->type == SAPP_EVENTTYPE_TOUCHES_BEGAN) {
+  if (event->type == SAPP_EVENTTYPE_TOUCHES_BEGAN ||
+      event->type == SAPP_EVENTTYPE_TOUCHES_ENDED) {
+
+    RCTLogInfo(@"Event with %i tocuhes", event->num_touches);
+    for (int i = 0; i < event->num_touches; i++) {
+      sapp_touchpoint touch = event->touches[i];
+
+      RCTLogInfo(@"Touch %i (changed:%s) x: %f, y: %f", i, touch.changed ? "true" : "false", touch.pos_x, touch.pos_y);
+      if (touch.pos_y < sapp_heightf() * 0.2f) {
         sapp_request_quit();
+      }
+
+      bool isPressed = event->type == SAPP_EVENTTYPE_TOUCHES_BEGAN;
+      if (!touch.changed) {
+        continue;
+      }
+      if (touch.pos_x < sapp_widthf() / 2.0f) {
+        state.player.touchingLeft = isPressed;
+      }
+      else {
+        state.player.touchingRight = isPressed;
+      }
+      RCTLogInfo(@"touchingLeft: %s", state.player.touchingLeft ? "true" : "false");
+      RCTLogInfo(@"touchingRight: %s", state.player.touchingRight ? "true" : "false");
     }
+  }
 }
 
 static void cleanupCallback(void) {
