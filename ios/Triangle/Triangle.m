@@ -27,18 +27,11 @@ typedef struct {
 typedef struct {
     sg_pass_action pass_action;
     sg_pipeline pip;
-    sg_buffer vertex_buffer;
-    sg_bindings bind;
+    sg_bindings shipGeometry;
     player_t player;
 } state_t;
 
-static state_t state = { 
-  .player.shader_data = {
-    .scale = 0.2f,
-    .posX = 0.0f,
-    .posY = -0.7f
-  }
-};
+static state_t state = {0};
 
 typedef struct {
   float posX, posY, posZ;
@@ -69,12 +62,18 @@ static void init(void) {
         .context = sapp_sgcontext()
     });
 
-    state.vertex_buffer = sg_make_buffer(&(sg_buffer_desc){
+    state = (state_t) {
+      .player.shader_data = {
+        .scale = 0.2f,
+        .posX = 0.0f,
+        .posY = -0.7f
+      }
+    };
+
+    state.shipGeometry.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc){
         .size = SG_RANGE(shipVertices).size,
         .data = SG_RANGE(shipVertices),
     });
-
-    state.bind.vertex_buffers[0] = state.vertex_buffer;
 
   NSString* vsPath = [[NSBundle mainBundle] pathForResource:@"triangleVS" ofType:@"txt"];
   NSString* fsPath = [[NSBundle mainBundle] pathForResource:@"triangleFS" ofType:@"txt"];
@@ -99,10 +98,17 @@ static void init(void) {
   });
 }
 
+static void drawGeometry(sg_bindings geometry, shader_data_t data, int triangleCount) {
+  sg_apply_bindings(&geometry);
+  sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, &SG_RANGE(data));
+  sg_draw(0, 3 * triangleCount, 1);
+}
+
 static void frame(void) {
   const float deltaTime = 1.0f / 60.0f;
+  const float aspect = sapp_widthf() / sapp_heightf();
 
-  state.player.shader_data.aspect = sapp_widthf() / sapp_heightf();
+  state.player.shader_data.aspect = aspect;
   // state.player.shader_data.rot = frame_time;
 
   if (state.player.touchingLeft) {
@@ -127,10 +133,18 @@ static void frame(void) {
   state.player.shader_data.posX += state.player.velocity * deltaTime;
   
   sg_begin_default_pass(&state.pass_action, sapp_width(), sapp_height());
+
   sg_apply_pipeline(state.pip);
-  sg_apply_bindings(&state.bind);
-  sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, &SG_RANGE(state.player.shader_data));
-  sg_draw(0, 3, 1);
+
+  shader_data_t tmp = {
+    .posX = 0.5f,
+    .scale = 0.2f,
+    .aspect = aspect,
+    .rot = 3.1415f / 2.0f,
+  };
+  drawGeometry(state.shipGeometry, tmp, 1);
+  drawGeometry(state.shipGeometry, state.player.shader_data, 1);
+  
   sg_end_pass();
   sg_commit();
 }
