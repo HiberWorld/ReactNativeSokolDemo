@@ -18,19 +18,3 @@ export const PageTitle = styled.Text`
   color: ${colors.white};
   margin-left: 8px;
 `;
-
-export const TriangleContainer = styled.View`
-  margin-top: 20px;
-`;
-
-export const TriangleButton = styled.Pressable`
-  width: 100%;
-  padding: 16px;
-  border-radius: 8px;
-  background-color: ${colors.red};
-`;
-export const TriangleButtonText = styled.Text`
-  font-weight: 500;
-  color: ${colors.white};
-  text-align: center;
-`;

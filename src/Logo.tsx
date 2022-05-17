@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components/native';
+import {colors} from './colors';
 
 const Logo = styled.View`
-  border-color: blue;
+  border-color: ${colors.red};
   border-left-color: transparent;
   border-right-color: transparent;
   height: 0px;

@@ -1,7 +1,10 @@
 import {NativeModules} from 'react-native';
 
-interface Triangle {
-  startTriangle: (callback: (res: any) => void) => void;
+export type TriangleCallbackResponse = {score: number};
+
+export type TriangleCallback = (res: string) => any;
+export interface Triangle {
+  startTriangle: (callback: TriangleCallback) => void;
 }
 
 export default NativeModules.TriangleModule as Triangle;

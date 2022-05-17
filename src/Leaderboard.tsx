@@ -65,17 +65,30 @@ const UserIcon = () => (
   </UserCircle>
 );
 
-export default () => (
+export type LeaderboardEntry = {
+  username: string;
+  score: number;
+};
+
+interface LeaderboardProps {
+  leaderboardData: LeaderboardEntry[];
+}
+
+export default ({leaderboardData = []}: LeaderboardProps) => (
   <>
     <LeaderboardHeader>Leaderboard</LeaderboardHeader>
     <LeaderboardContainer>
-      <LeaderboardEntry>
-        <LeaderboardEntryText>100 points</LeaderboardEntryText>
-        <LeaderboardUserContainer>
-          <UserIcon />
-          <LeaderboardEntryText>Wilhelm</LeaderboardEntryText>
-        </LeaderboardUserContainer>
-      </LeaderboardEntry>
+      {leaderboardData
+        .sort((a, b) => (a.score < b.score ? 1 : -1))
+        .map(entry => (
+          <LeaderboardEntry>
+            <LeaderboardEntryText>{entry.score}</LeaderboardEntryText>
+            <LeaderboardUserContainer>
+              <UserIcon />
+              <LeaderboardEntryText>{entry.username}</LeaderboardEntryText>
+            </LeaderboardUserContainer>
+          </LeaderboardEntry>
+        ))}
     </LeaderboardContainer>
   </>
 );
