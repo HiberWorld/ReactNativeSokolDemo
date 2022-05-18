@@ -19,18 +19,18 @@ const PopupText = styled.Text`
 
 const PopupTitle = styled.Text`
   color: ${colors.white};
-  font-size: 64px;
+  font-size: 48px;
   text-align: center;
   font-weight: 500;
   line-height: 64px;
 `;
 
 const PopupInput = styled.TextInput`
-  color: ${colors.almostBlack};
   background-color: ${colors.white};
   margin: 8px;
   padding: 8px;
   border-radius: 4px;
+  font-size: 32px;
 `;
 
 const PopupSubmit = styled.Pressable`

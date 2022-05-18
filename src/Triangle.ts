@@ -1,4 +1,8 @@
-import {NativeModules} from 'react-native';
+import {
+  EmitterSubscription,
+  NativeEventEmitter,
+  NativeModules,
+} from 'react-native';
 
 export type TriangleCallbackResponse = {score: number};
 
@@ -7,4 +11,19 @@ export interface Triangle {
   startTriangle: (callback: TriangleCallback) => void;
 }
 
-export default NativeModules.TriangleModule as Triangle;
+const Triangle = NativeModules.TriangleModule;
+
+export default Triangle;
+
+const eventEmitter = Triangle && new NativeEventEmitter(Triangle);
+
+type Event = {
+  action: string;
+  value: string;
+};
+
+type EventListener = (event: Event) => any;
+
+export const addTriangleEventListener = (
+  callback: EventListener,
+): EmitterSubscription => eventEmitter.addListener('event', callback);

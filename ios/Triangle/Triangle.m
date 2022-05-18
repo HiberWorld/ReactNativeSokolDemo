@@ -47,7 +47,6 @@ typedef struct {
   float colR, colG, colB;
 } vertex_t;
 
-/* a vertex buffer with 3 vertices */
 static vertex_t redTriangleVertices[] = {
   {
     .posX = 0.0f, .posY = 0.8f, .posZ = 0.0f,  
@@ -172,7 +171,7 @@ static void drawGeometry(sg_bindings geometry, shader_data_t data, int triangleC
   sg_draw(0, 3 * triangleCount, 1);
 }
 
-static RCTResponseSenderBlock consoleCallback;
+static RCTResponseSenderBlock gameEndCallback;
 
 static bool intersect(shader_data_t a, shader_data_t b) {
   float x = a.posX - b.posX;
@@ -182,6 +181,12 @@ static bool intersect(shader_data_t a, shader_data_t b) {
     return true;
   }
   return false;
+}
+
+void sendEvent(const char* name, const char* value) {
+    if ([[TriangleModule sharedInstance] hasListeners]) {
+        [[TriangleModule sharedInstance] sendEventWithName:@"event" body:@{@"action": @(name), @"value": @(value)}];;
+    }
 }
 
 static void frame(void) {
@@ -206,12 +211,17 @@ static void frame(void) {
   for (int i = 0; i < ASTEROID_COUNT; i++) {
     shader_data_t* asteroid = &state.asteroids[i];
     if (intersect(state.player.shader_data, *asteroid)) {
-      NSString *message = [NSString stringWithFormat:@"{ \"score\": %d}", state.player.score];
-      RCTLogInfo(@"Intersected: asteroid %d", i);
-      consoleCallback(@[message]);
+      // end the game
+
+      NSString *score = [NSString stringWithFormat:@"%d", state.player.score];
+      sendEvent("gameEnd", [score UTF8String]);
+
+      if (gameEndCallback) {
+        NSString *message = [NSString stringWithFormat:@"{ \"score\": %d}", state.player.score];
+        gameEndCallback(@[message]);
+      }
+
       sapp_request_quit();
-    } else {
-      state.player.score += 1;
     }
 
     asteroid->aspect = aspect;
@@ -220,6 +230,10 @@ static void frame(void) {
     if (asteroid->posY < -1.0f) {
       asteroid->posX = ((float) rand() / (float) (RAND_MAX/2)) - 1.0f;
       asteroid->posY = 1.2f;
+      state.player.score += 1;
+
+      NSString *score = [NSString stringWithFormat:@"%d", state.player.score];
+      sendEvent("point", [score UTF8String]);
     }
 
     asteroid->posY -= 1.0f * deltaTime;
@@ -272,11 +286,9 @@ static void eventCallback(const sapp_event *event) {
   if (event->type == SAPP_EVENTTYPE_TOUCHES_BEGAN ||
       event->type == SAPP_EVENTTYPE_TOUCHES_ENDED) {
 
-    RCTLogInfo(@"Event with %i touches", event->num_touches);
     for (int i = 0; i < event->num_touches; i++) {
       sapp_touchpoint touch = event->touches[i];
 
-      RCTLogInfo(@"Touch %i (changed:%s) x: %f, y: %f", i, touch.changed ? "true" : "false", touch.pos_x, touch.pos_y);
       if (touch.pos_y < sapp_heightf() * 0.2f) {
         sapp_request_quit();
       }
@@ -291,8 +303,6 @@ static void eventCallback(const sapp_event *event) {
       else {
         state.player.touchingRight = isPressed;
       }
-      RCTLogInfo(@"touchingLeft: %s", state.player.touchingLeft ? "true" : "false");
-      RCTLogInfo(@"touchingRight: %s", state.player.touchingRight ? "true" : "false");
     }
   }
 }
@@ -335,8 +345,7 @@ bool _sapp_app_delegate_didFinishLaunchingWithOptions(NSDictionary* launchOption
 
 RCT_EXPORT_METHOD(startTriangle: (RCTResponseSenderBlock)callback)
 {
-  // callback(@[@("you win!")]);
-  consoleCallback = callback;
+  gameEndCallback = callback;
     
   dispatch_async(dispatch_get_main_queue(), ^{
     

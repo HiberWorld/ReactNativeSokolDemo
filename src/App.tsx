@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StatusBar} from 'react-native';
 import {FullPage, PageTitle, DarkSafeArea} from './App.styles';
 import Leaderboard, {LeaderboardEntry} from './Leaderboard';
 import Logo from './Logo';
 import {Popup} from './Popup';
 import {StartTriangle} from './StartTriangle';
+import {addTriangleEventListener} from './Triangle';
 
 const App = () => {
   const [score, setScore] = useState(0);
@@ -12,6 +13,18 @@ const App = () => {
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
     [],
   );
+
+  useEffect(() => {
+    const listener = addTriangleEventListener(event => {
+      console.log(JSON.stringify(event));
+      // const {action, value} = event;
+      // if (action === 'gameEnd') {
+      //   setShowPopup(true);
+      //   setScore(Number(value) || 0);
+      // }
+    });
+    return () => listener.remove();
+  }, []);
 
   return (
     <DarkSafeArea>
@@ -32,7 +45,6 @@ const App = () => {
             <PageTitle>Triangle Game</PageTitle>
             <StartTriangle
               gameEndCallback={res => {
-                console.log('res: ', res);
                 setScore(JSON.parse(res)?.score || 0);
                 setShowPopup(true);
               }}
