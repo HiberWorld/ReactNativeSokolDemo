@@ -10,9 +10,11 @@ import {addTriangleEventListener} from './Triangle';
 const App = () => {
   const [score, setScore] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
-  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
-    [],
-  );
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([
+    {username: 'Per', score: 1},
+    {username: 'Jonas', score: 2},
+    {username: 'Gabriel', score: 3},
+  ]);
 
   useEffect(() => {
     const listener = addTriangleEventListener(event => {

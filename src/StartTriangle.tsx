@@ -28,7 +28,6 @@ export const StartTriangle = ({gameEndCallback}: StartTriangleProps) => {
     <TriangleContainer>
       <TriangleButton
         onPress={() => {
-          console.log('starting');
           Triangle.startTriangle(gameEndCallback);
         }}>
         <TriangleButtonText>▲ Enter the Triangle ▲</TriangleButtonText>

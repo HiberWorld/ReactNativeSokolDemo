@@ -185,7 +185,8 @@ static bool intersect(shader_data_t a, shader_data_t b) {
 
 void sendEvent(const char* name, const char* value) {
     if ([[TriangleModule sharedInstance] hasListeners]) {
-        [[TriangleModule sharedInstance] sendEventWithName:@"event" body:@{@"action": @(name), @"value": @(value)}];;
+        [[TriangleModule sharedInstance] 
+          sendEventWithName:@"event" body:@{@"action": @(name), @"value": @(value)}];;
     }
 }
 
@@ -314,7 +315,10 @@ static void cleanupCallback(void) {
 }
 
 void _sapp_init_state(const sapp_desc* desc);
-bool _sapp_app_delegate_didFinishLaunchingWithOptions(NSDictionary* launchOptions, UIViewController* viewController);
+bool _sapp_app_delegate_didFinishLaunchingWithOptions(
+  NSDictionary* launchOptions, 
+  UIViewController* viewController
+);
 
 @implementation TriangleModule
 
