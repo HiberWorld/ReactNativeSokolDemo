@@ -81,7 +81,7 @@ export default ({leaderboardData = []}: LeaderboardProps) => (
       {leaderboardData
         .sort((a, b) => (a.score < b.score ? 1 : -1))
         .map(entry => (
-          <LeaderboardEntry>
+          <LeaderboardEntry key={`${entry.username}-${entry.score}`}>
             <LeaderboardEntryText>{entry.score}</LeaderboardEntryText>
             <LeaderboardUserContainer>
               <UserIcon />

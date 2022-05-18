@@ -35,7 +35,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* SokolDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SokolDemoTests.m; sourceTree = "<group>"; };
 		0E060AA028253D5F0022A678 /* Triangle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Triangle.m; path = Triangle/Triangle.m; sourceTree = "<group>"; };
-		0E060AA328253E2A0022A678 /* Triangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Triangle.h; sourceTree = "<group>"; };
+		0E9749C72835129C00045F1E /* Triangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Triangle.h; path = Triangle/Triangle.h; sourceTree = "<group>"; };
 		0EEFE20328312BE90039A113 /* triangleFS.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = triangleFS.txt; sourceTree = "<group>"; };
 		0EEFE20528312C020039A113 /* triangleVS.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = triangleVS.txt; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* SokolDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SokolDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -94,8 +94,8 @@
 		0E549D0728311DC1003A6E13 /* Triangle */ = {
 			isa = PBXGroup;
 			children = (
-				0E060AA328253E2A0022A678 /* Triangle.h */,
 				0E060AA028253D5F0022A678 /* Triangle.m */,
+				0E9749C72835129C00045F1E /* Triangle.h */,
 			);
 			name = Triangle;
 			sourceTree = "<group>";

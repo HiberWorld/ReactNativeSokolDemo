@@ -1,9 +1,3 @@
-//
-//  Triangle.h
-//  ReactNativeSokolDemo
-//
-//  Created by Wilhelm Berggren on 2022-04-25.
-//
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
 
