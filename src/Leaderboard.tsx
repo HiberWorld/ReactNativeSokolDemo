@@ -22,6 +22,7 @@ const LeaderboardEntry = styled.View<{selected?: boolean}>`
   flex-direction: row;
   padding: 16px;
   justify-content: space-between;
+  margin: 4px;
 `;
 
 const LeaderboardEntryText = styled.Text`
